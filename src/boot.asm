@@ -4,10 +4,6 @@ bits 16
 start:
 	jmp loader
 
-loader:
-	cli
-	hlt
-
 
 
 ; ########### OEM Parameters ############
@@ -33,6 +29,30 @@ bsVolumeLabel: 	        DB "MOS FLOPPY "
 bsFileSystem: 	        DB "FAT12   "
 ; #######################################
 
+msg db "Test", 0
+
+; ## Print function ##
+; prints DS:SI 0 term
+Print:
+	lodsb
+	or al, al
+	jz PrintDone
+	mov ah, 0eh
+	int 10h
+	jmp Print
+PrintDone:
+	ret
+
+loader:
+	xor ax, ax
+	mov ds, ax
+	mov es, ax
+
+	mov si, msg
+	call Print
+
+	cli
+	hlt
 
 
 times 510 - ($-$$) db 0
