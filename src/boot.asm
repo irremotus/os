@@ -7,8 +7,7 @@ start:
 
 
 ; ########### OEM Parameters ############
-times 0bh-$+start db 0
-
+bpbOEM:			DB "My OS   "
 bpbBytesPerSector:  	DW 512
 bpbSectorsPerCluster: 	DB 1
 bpbReservedSectors: 	DW 1
@@ -28,6 +27,7 @@ bsSerialNumber:	        DD 0xa0a1a2a3
 bsVolumeLabel: 	        DB "MOS FLOPPY "
 bsFileSystem: 	        DB "FAT12   "
 ; #######################################
+
 
 msg db "Test", 0
 
