@@ -30,6 +30,8 @@ bsFileSystem: 	        DB "FAT12   "
 
 
 msg db "Test", 0
+reading db "Reading", 0
+readdone db "Read done", 0
 
 ; ## Print function ##
 ; prints DS:SI 0 term
@@ -44,12 +46,42 @@ PrintDone:
 	ret
 
 loader:
+	; set DS and ES to 0
 	xor ax, ax
 	mov ds, ax
 	mov es, ax
 
 	mov si, msg
 	call Print
+
+; reset disk
+.reset:
+	mov ah, 0
+	mov dl, 0
+	int 0x13
+	jc .reset
+
+	; set ES to 0x1000
+	mov ax, 0x1000
+	mov es, ax
+	xor bx, bx
+
+.read:
+	mov ah, 0x02
+	mov al, 1
+	mov ch, 1
+	mov cl, 2
+	mov dh, 0
+	mov dl, 128
+	int 0x13
+	mov si, reading
+	call Print
+	jc .read
+
+	mov si, readdone
+	call Print
+
+	jmp 0x1000:0x0
 
 	cli
 	hlt
