@@ -22,12 +22,21 @@ PROJS := boot stage2
 boot := boot
 stage2 := stage2
 
-run: all
+makedisk:
+	./createdisk.sh
+	./lo.sh
+	./copyboot.sh
+	./formatdisk.sh
+	./copystage2.sh
+	./unlo.sh
+
+run: all makedisk
 	qemu-system-i386 ${BINDIR}/boot
 
 
 # Custom clean commands to be automatically executed when 'make clean' is run
 userclean: 
+	rm -f disk.img
 
 
 
