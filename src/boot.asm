@@ -36,46 +36,8 @@ readdone db "Read done", 13, 10, 0
 msg_failure "Failed to load second stage loader: file does not exist.", 13, 10, 0
 
 %include "printstr.asm"
-
-; Read sectors from cylinder 1, head 0, hard drive 0
-; al: number of sectors
-; cl: sector number
-; ch: low byte of cylinder number
-; dh: head number
-; ES:BX: where to read to
-ReadSectors:
-	mov ah, 0x02
-	mov dl, 128 ; drive number, 128 means hard drive 0
-	int 0x13
-	mov si, reading
-	call Print
-	jc ReadSectors
-
-	mov si, readdone
-	call Print
-
-	ret
-
-CHSLBA:
-	sub ax, 0x2
-	xor cx, cx
-	mov cl, BYTE [pbpSectorsPerCluster]
-	mul cx
-	ret
-
-; ax is input: sector to read
-LBACHS:
-	xor dx, dx
-	div WORD [bpbSectorsPerTrack]
-	inc dl
-	mov BYTE [absoluteSector], dl
-
-	xor dx, dx
-	div WORD [bpbHeadsPerCylinder]
-	mov BYTE [absoluteHead], dl
-
-	mov BYTE [absoluteTrack], al
-	ret
+%include "ReadSectors.asm"
+%include "LBACHS.asm"
 
 FAILURE:
 	mov si, msg_failure
