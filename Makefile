@@ -1,19 +1,21 @@
-CXX := g++
-CC := gcc
-ASM := nasm
-INCDIR := include
-CXXFLAGS := -g -Wall -std=c++11 -I$(INCDIR)
-CCFLAGS := -g -Wall -I$(INCDIR)
-ASMFLAGS := 
 SRCDIR := src
 BINDIR := bin
 OBJDIR := obj
+INCDIR := include
+
+CXX := g++
+CC := gcc
+ASM := nasm
+
+CXXFLAGS := -g -Wall -std=c++11 -I$(INCDIR)
+CCFLAGS := -g -Wall -I$(INCDIR)
+ASMFLAGS := -I$(SRCDIR)/
 
 
 # Edit the below lists to add binaries and objects
 
 # List of projects (binaries) to make by default, run 'make binaryname' to make a non-default one from the list below
-PROJS := boot stage2
+PROJS := boot stage2 sector2
 
 # List of binaries that can be made, and the objects they each need
 
@@ -21,18 +23,23 @@ PROJS := boot stage2
 # binname2 := obj1 obj3 obj4
 boot := boot
 stage2 := stage2
+sector2 := sector2.asm
 
 makedisk:
 	./createdisk.sh
 	./lo.sh
-	./copyboot.sh
 	./formatdisk.sh
-	./copystage2.sh
+	./copyboot.sh
+	#./copystage2.sh
 	./unlo.sh
 
-run: all makedisk
-	qemu-system-i386 ${BINDIR}/boot
+full: all makedisk
 
+run: full
+	qemu-system-i386 disk.img
+
+runonly:
+	qemu-system-i386 disk.img
 
 # Custom clean commands to be automatically executed when 'make clean' is run
 userclean: 
