@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo modprobe loop
-LODEV=`losetup -f`
+LODEV=`sudo losetup -f`
 echo "Set up loop device: ${LODEV}"
 name="disk.img"
 if [ $# -ge 1 ]; then
