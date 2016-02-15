@@ -1,0 +1,46 @@
+<h1>KevEvI OS</h1>
+
+<hr />
+
+<h1><em>WARNING:</em></h1>
+
+<h2><em>Some scripts need sudo to write directly to devices using <code>dd</code> and loopback interfaces</em></h2>
+
+<h2><em>None of the scripts ask questions -- they WILL clobber your files</em></h2>
+
+<h2><em>Read and understand the scripts before you use them and before you run <code>make</code></em></h2>
+
+<hr />
+
+<h3>Scripts:</h3>
+
+<p>Running <code>make</code> runs one or more of these scripts:</p>
+
+<ul>
+<li>lo: sets up <code>disk.img</code> as a loopback device</li>
+<li>unlo: tears down the loopback device set up by <code>lo</code></li>
+<li>createdisk: creates the disk image <code>disk.img</code></li>
+<li>formatdisk: formats <code>disk.img</code> using FAT12</li>
+<li>copyboot: copies the bootloader <code>bin/boot</code> to the disk image</li>
+<li>copystage2: mounts the filesystem on the disk image and copies the stage 2 loader</li>
+</ul>
+
+<h3>Requirements:</h3>
+
+<ul>
+<li>nasm</li>
+<li>qemu</li>
+</ul>
+
+<h3>Building and running:</h3>
+
+<p>The following targets are available for <code>make</code>:</p>
+
+<ul>
+<li><code>makedisk</code>: creates the disk image and copies the files to it</li>
+<li><code>runonly</code>: runs the emulator with the disk image</li>
+<li><code>full</code>: compiles and assembles all files</li>
+<li><code>run</code>: same as <code>full</code>, but also runs the emulator</li>
+<li><code>clean</code>: removes all generated files</li>
+<li><code>doc</code>: compile the README and file comments; output in <code>doc/</code></li>
+</ul>
