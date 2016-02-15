@@ -35,11 +35,10 @@ makedisk:
 
 full: all makedisk
 
-run: full
-	qemu-system-i386 disk.img
+run: full runonly
 
 runonly:
-	qemu-system-i386 disk.img
+	qemu disk.img
 
 # Custom clean commands to be automatically executed when 'make clean' is run
 userclean: 
