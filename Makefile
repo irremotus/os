@@ -43,6 +43,14 @@ run: full runonly
 runonly:
 	${QEMU} disk.img
 
+
+doc: doc/README.html
+
+doc/README.html: README.md
+	mkdir -p doc
+	markdown README.md > doc/README.html
+
+
 # Custom clean commands to be automatically executed when 'make clean' is run
 userclean: 
 	rm -f disk.img
