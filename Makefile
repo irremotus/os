@@ -12,6 +12,9 @@ CCFLAGS := -g -Wall -I$(INCDIR)
 ASMFLAGS := -I$(SRCDIR)/
 
 
+QEMU := qemu-system-i386
+
+
 # Edit the below lists to add binaries and objects
 
 # List of projects (binaries) to make by default, run 'make binaryname' to make a non-default one from the list below
@@ -38,7 +41,7 @@ full: all makedisk
 run: full runonly
 
 runonly:
-	qemu disk.img
+	${QEMU} disk.img
 
 # Custom clean commands to be automatically executed when 'make clean' is run
 userclean: 
