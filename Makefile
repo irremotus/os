@@ -29,12 +29,12 @@ stage2 := stage2
 sector2 := sector2.asm
 
 makedisk:
-	./createdisk.sh
-	./lo.sh
-	./formatdisk.sh
-	./copyboot.sh
+	scripts/createdisk.sh
+	scripts/lo.sh
+	scripts/formatdisk.sh
+	scripts/copyboot.sh
 	#./copystage2.sh
-	./unlo.sh
+	scripts/unlo.sh
 
 full: all makedisk
 
