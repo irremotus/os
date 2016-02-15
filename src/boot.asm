@@ -7,7 +7,7 @@ start:
 
 
 ; ########### OEM Parameters ############
-bpbOEM:			DB "My OS   "
+bpbOEM:			DB "KevEvIOS"
 bpbBytesPerSector:  	DW 512
 bpbSectorsPerCluster: 	DB 1
 bpbReservedSectors: 	DW 1
