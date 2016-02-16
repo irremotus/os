@@ -82,7 +82,7 @@ loader:
 	mov ch, 0
 	mov dh, 0
 
-	mov ax, 0x1000
+	mov ax, 0x7e0
 	mov es, ax
 	xor bx, bx
 
@@ -94,7 +94,7 @@ loader:
 	call Print
 	;cli
 	;hlt
-	jmp 0x1000:0x0
+	jmp 0x7e0:0x0
 	mov si, msg_test
 	call Print
 
