@@ -1,4 +1,4 @@
-org 0x7e00
+org 0x1000
 %include "printstr.asm"
 
 msg_sector2 db "This is sector 2"
