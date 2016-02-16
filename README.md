@@ -38,3 +38,7 @@ The following targets are available for `make`:
  - `run`: same as `full`, but also runs the emulator
  - `clean`: removes all generated files
  - `doc`: compile the README and file comments; output in `doc/`
+
+### Notes:
+
+ - when jumping to a location in memory, make sure it contains executable code, and not a string -- this has been a problem
