@@ -26,16 +26,29 @@ bsExtBootSignature: 	DB 0x29
 bsSerialNumber:	        DD 0xa0a1a2a3
 bsVolumeLabel: 	        DB "MOS FLOPPY "
 bsFileSystem: 	        DB "FAT12   "
-; #######################################
-
+; OEM Memory Layout?
+;byte:     0              1              2             3               4
+;  ┌──────────────┬───────────────┬──────────────┬──────────────┬──────────────┐
+;  │  BOOT_DRIVE  │ReservedSectors│ NumberOfFATs │              │              │
+;  └──────────────┴───────────────┴──────────────┴──────────────┴──────────────┘
+;..............................................................................
+;byte:     5              6             7             8               9
+;  ┌──────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
+;  │              │              │              │              │SectorsPerFat │
+;  └──────────────┴──────────────┴──────────────┴──────────────┴──────────────┘
+;..............................................................................
+;byte:    510           511             512	      512	     514
+;  ┌──────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
+;  │              │              │  RootEntries │              │              │
+;  └──────────────┴──────────────┴──────────────┴──────────────┴──────────────┘
 ; Constant strings and values
-ImageName db "STAGE2  SYS", 0 ; name of stage 2 loader
-msg_test db "Test", 13, 10, 0
-msg_fail db "Failure", 13, 10, 0
-msg_done_reading db "Done reading", 13, 10, 0
-cluster db 0
-dataStart dw 0
-BOOT_DRIVE db 0
+ImageName db "STAGE2  SYS", 0			; name of stage 2 loader
+msg_test db "Test", 13, 10, 0			; declare msg_test = 'Test\r\n\0'
+msg_fail db "Failure", 13, 10, 0		; declare msg_fail = 'Failure\r\n\0'
+msg_done_reading db "Done reading", 13, 10, 0	; declare msg_done_reading = 'Done reading\r\n\0'
+cluster db 0					; declare cluser = 0, 1 byte
+dataStart dw 0					; declare datastare = 0, 2 bytes
+BOOT_DRIVE db 0					; declare BOOT_DRIVE = 0, 1 byte
 
 ; Include the files we need with basic functions like printing
 %include "printstr.asm"
@@ -44,22 +57,24 @@ BOOT_DRIVE db 0
 
 ; Something went horribly wrong, so stop
 FAILURE:
-	mov si, msg_fail
-	call Print
-	cli
-	hlt
+	mov si, msg_fail	; Move address of msg_fail string into si
+	call Print		; Call Print function from "printstr.asm"
+	cli			; Clear interrupt flag
+	hlt			; Stop inst execution and plat processor in halt state
 
 ; The main loader
 loader:
-	mov [BOOT_DRIVE], dl ; get the drive we will boot from -- BIOS gives us this
-	; set DS and ES to 0 (Data and Extra Segment registers)
-	; these cannot be set directly
+    	mov [BOOT_DRIVE], dl 	; get the drive we will boot from -- BIOS gives us this
+				; move register dl into memory location pointed to by
+				; BOOT_DRIVE, [BOOT_DRIVE] == *BOOT_DRIVE
+
 	xor ax, ax
-	mov ds, ax
+	mov ds, ax		; set DS and ES to 0 (Data and Extra Segment registers)
+				; these cannot be set directly
 	mov es, ax
 
-	mov bp, 0x7a00 ; put the stack out of the way
-	mov sp, bp
+	mov bp, 0x7a00 		; put the stack out of the way, the stack grows downwards
+	mov sp, bp     		; sp = bp, the stack is empty
 
 	mov si, msg_test
 	call Print
@@ -67,15 +82,17 @@ loader:
 ; load root directory
 	; Find start of root entry
 	xor ax, ax
-	mov al, [bpbNumberOfFATs]
-	mul WORD [bpbSectorsPerFAT]
-	add ax, [bpbReservedSectors]
-	mov cx, ax ; sector to read is in cl
+	mov al, [bpbNumberOfFATs] 	; al = *bpbNumberOfFats
+	mul WORD [bpbSectorsPerFAT]	; ax = al * (*bpbSectorsPerFat)
+    	add ax, [bpbReservedSectors]	; ax += (*bpbReservedSectors)
+	; sector to read is in cl
+	mov cx, ax 			; cx = ax
 
 	; Find number of sectors in root entry
-	mov ax, 0x0020
-	mul WORD [bpbRootEntries]
-	div WORD [bpbBytesPerSector] ; number of sectors is in al
+	; TODO: What's going on here? Is this correct?
+	mov ax, 0x0020		     	; ax = 0x0020
+	mul WORD [bpbRootEntries]    	; ax *= *bpbRootEntries == ax *= *(0x200)
+    	div WORD [bpbBytesPerSector] 	; number of sectors is in al, ax /= *bpbBytesPerSector == ax /= *(0x200)
 
 	; Load root entry
 
