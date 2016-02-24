@@ -3,6 +3,7 @@
 ; cl: sector number (starts at 1)
 ; ch: low byte of cylinder (track) number (starts at 0)
 ; dh: head number (starts at 0)
+; dl: drive number
 ; ES:BX: where to read to
 msg_read_error db "Disk Error", 13, 10, 0
 read_error:
@@ -24,4 +25,3 @@ ReadSectors:
 .end:
 	popa
 	ret
-
