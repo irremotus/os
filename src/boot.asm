@@ -44,23 +44,24 @@ BOOT_DRIVE db 0
 
 ; Something went horribly wrong, so stop
 FAILURE:
-	mov si, msg_fail
-	call Print
-	cli
-	hlt
+	mov si, msg_fail	; Move address of msg_fail string into si
+	call Print		; Call Print function from "printstr.asm"
+	cli			; Clear interrupt flag
+	hlt			; Stop inst execution and plat processor in halt state
 
 ; The main loader
 loader:
-	cli
-	mov [BOOT_DRIVE], dl ; get the drive we will boot from -- BIOS gives us this
-	; set DS and ES to 0 (Data and Extra Segment registers)
-	; these cannot be set directly
+    	mov [BOOT_DRIVE], dl 	; get the drive we will boot from -- BIOS gives us this
+				; move register dl into memory location pointed to by
+				; BOOT_DRIVE, [BOOT_DRIVE] == *BOOT_DRIVE
+
 	xor ax, ax
-	mov ds, ax
+	mov ds, ax		; set DS and ES to 0 (Data and Extra Segment registers)
+				; these cannot be set directly
 	mov es, ax
 
-	mov bp, 0x7a00 ; put the stack out of the way
-	mov sp, bp
+	mov bp, 0x7a00 		; put the stack out of the way, the stack grows downwards
+	mov sp, bp     		; sp = bp, the stack is empty
 
 	mov si, msg_test
 	call Print
