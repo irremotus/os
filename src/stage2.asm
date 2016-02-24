@@ -3,6 +3,7 @@ bits 16
 jmp main
 
 %include "printstr.asm"
+msg db "Stage 2", 13, 10, 0
 
 main:
 	cli
@@ -11,5 +12,4 @@ main:
 
 	mov si, msg
 	call Print
-
-msg db "Stage 2", 13, 10, 0
+	hlt
