@@ -2,29 +2,30 @@ org 0x7c00 ; this is where BIOS puts us
 bits 16 ; 16 bit real mode
 
 start:
-	jmp 0x0000:loader ; skip the OEM parameter block and go straight to the loader
+	jmp loader ; skip the OEM parameter block and go straight to the loader
 
-
+; NOTE:  we won't actually use these values; they will be overwritten by the mkfs.fat formatter
+; Just keep the labels so we can access these values at runtime
 ; ########### OEM Parameters ############
-bpbOEM:			DB "KevEvIOS" ; name our OS in the disk image
-bpbBytesPerSector:  	DW 512
-bpbSectorsPerCluster: 	DB 1
-bpbReservedSectors: 	DW 1
-bpbNumberOfFATs: 	DB 2
-bpbRootEntries: 	DW 512
-bpbTotalSectors: 	DW 512
-bpbMedia: 	        DB 0xF8
-bpbSectorsPerFAT: 	DW 9
-bpbSectorsPerTrack: 	DW 512
-bpbHeadsPerCylinder: 	DW 1
-bpbHiddenSectors: 	DW 0
-bpbTotalSectorsBig:     DW 0
-bsDriveNumber: 	        DB 0
-bsUnused: 	        DB 0
-bsExtBootSignature: 	DB 0x29
-bsSerialNumber:	        DD 0xa0a1a2a3
-bsVolumeLabel: 	        DB "MOS FLOPPY "
-bsFileSystem: 	        DB "FAT12   "
+bpbOEM:			DB "KevEvIOS" ; name our OS in the disk image; we will keep this ; 8
+bpbBytesPerSector:  	DW 512 ; 2
+bpbSectorsPerCluster: 	DB 1 ; 1
+bpbReservedSectors: 	DW 1 ; 2
+bpbNumberOfFATs: 	DB 2 ; 1
+bpbRootEntries: 	DW 512 ; 2
+bpbTotalSectors: 	DW 512 ; 2
+bpbMedia: 	        DB 0xF8 ; 1
+bpbSectorsPerFAT: 	DW 9 ; 2
+bpbSectorsPerTrack: 	DW 512 ; 2
+bpbHeadsPerCylinder: 	DW 1 ; 2
+bpbHiddenSectors: 	DD 0 ; 4 these need to be 4 bytes
+bpbTotalSectorsBig:     DD 0 ; 4 these need to be 4 bytes
+bsDriveNumber: 	        DB 0 ; 1
+bsUnused: 	        DB 0 ; 1
+bsExtBootSignature: 	DB 0x29 ; 1
+bsSerialNumber:	        DD 0xa0a1a2a3 ; 4
+bsVolumeLabel: 	        DB "MOS FLOPPY " ; 11
+bsFileSystem: 	        DB "FAT12   " ; 8
 ; #######################################
 
 ; Constant strings and values
