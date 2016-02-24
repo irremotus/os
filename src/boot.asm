@@ -5,9 +5,8 @@ start:
 	jmp 0x0000:loader ; skip the OEM parameter block and go straight to the loader
 
 
-
 ; ########### OEM Parameters ############
-bpbOEM:			DB "KevEvIOS"
+bpbOEM:			DB "KevEvIOS" ; name our OS in the disk image
 bpbBytesPerSector:  	DW 512
 bpbSectorsPerCluster: 	DB 1
 bpbReservedSectors: 	DW 1

@@ -33,7 +33,7 @@ makedisk:
 	scripts/lo.sh
 	scripts/formatdisk.sh
 	scripts/copyboot.sh
-	#./copystage2.sh
+	scripts/copystage2.sh
 	scripts/unlo.sh
 
 full: all makedisk
