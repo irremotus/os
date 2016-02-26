@@ -30,9 +30,9 @@ bsFileSystem: 	        DB "FAT12   " ; 8
 
 ; Constant strings and values
 ImageName db "STAGE2  SYS", 0 ; name of stage 2 loader
-msg_test db "Test", 13, 10, 0
-msg_fail db "Failure", 13, 10, 0
-msg_done_reading db "Done reading", 13, 10, 0
+msg_test db "T", 13, 10, 0
+msg_fail db "F", 13, 10, 0
+msg_done_reading db "r done", 13, 10, 0
 cluster dw 0
 dataStart dw 0
 BOOT_DRIVE db 0
@@ -41,12 +41,12 @@ BOOT_DRIVE db 0
 %include "printstr.asm"
 %include "ReadSectors.asm"
 %include "LBACHS.asm"
+%include "printhex.asm"
 
 ; Something went horribly wrong, so stop
 FAILURE:
 	mov si, msg_fail	; Move address of msg_fail string into si
 	call Print		; Call Print function from "printstr.asm"
-	cli			; Clear interrupt flag
 	hlt			; Stop inst execution and plat processor in halt state
 
 ; The main loader
@@ -62,9 +62,6 @@ loader:
 
 	mov bp, 0x7a00 		; put the stack out of the way, the stack grows downwards
 	mov sp, bp     		; sp = bp, the stack is empty
-
-	mov si, msg_test
-	call Print
 
 ; load root directory
 
@@ -114,9 +111,6 @@ loader:
 	jmp FAILURE ; no more entries, we didn't find it
 
 load_fat:
-	mov si, msg_test
-	call Print
-
 	xor dx, dx
 	mov dx, [di + 26] ; first cluster
 	mov [cluster], dx
